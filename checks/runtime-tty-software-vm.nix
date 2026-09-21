@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # Exercise Ciri's real TTY/DRM backend in a disposable NixOS VM. This is the
 # fork-specific gate: LIBGL_ALWAYS_SOFTWARE must reach the exact packaged
 # binary, the software-EGL fallback must initialize, and dma-buf/DRM leasing

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # Boot an isolated NixOS VM, start a headless Weston parent, then run the exact
 # packaged Ciri binary as a nested compositor. IPC is permitted only after the
 # test has proved which new socket this compositor owns.

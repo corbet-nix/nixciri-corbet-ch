@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 { pkgs, src }:
 
 pkgs.runCommand "nixciri-no-retired-names"

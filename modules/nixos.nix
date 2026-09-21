@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # NixOS installation and portal integration for Ciri. Home configuration is
 # deliberately separate in homeManagerModules.ciri.
 { self, descriptorFor }:

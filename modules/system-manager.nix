@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # Arch/CachyOS integration for the complete Ciri product.
 #
 # The compositor comes from the pinned corbet-labs/ciri input. Arch supplies

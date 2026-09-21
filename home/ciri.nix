@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # home/ciri.nix — homeManagerModules.ciri: generate ~/.config/ciri/config.kdl from
 # structured options in the programs.ciri namespace.
 #

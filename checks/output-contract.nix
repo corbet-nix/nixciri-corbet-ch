@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # Evaluates home/ciri.nix's structured-output/layout/session seam for real: this is the part of
 # this session's work that replaced a single raw-KDL string with something a registry can key on
 # and a build can assert about, so it is the part with the most SILENT failure modes to close.

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 {
   description = "nixciri — declarative Ciri packaging and desktop integration";
 
@@ -12,7 +13,7 @@
     };
 
     # nixhost IS an input, for exactly one thing: `lib.probeFact`/`lib.collectProbes`
-    # (github:julian-corbet/nixhost-corbet-ch, `lib/facts.nix`) -- the shared, plain-function fix
+    # (github:corbet-nix/nixhost-corbet-ch, `lib/facts.nix`) -- the shared, plain-function fix
     # for the cross-namespace defensive-read defect class this module's own reads of
     # `nixdisplay.layouts`/`nixdisplay.monitors`/`nixdesktop.sessions` AND
     # `nixgpu.stableDevicePaths.devices` lean on (see nixhost's own `lib/facts.nix` header, and
@@ -25,7 +26,7 @@
     # `nixdesktop.startup` remains a defensive, zero-flake-dependency read. The probe mechanism
     # is used for the assertable output/layout/session seams.
     nixhost = {
-      url = "github:julian-corbet/nixhost-corbet-ch";
+      url = "github:corbet-nix/nixhost-corbet-ch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

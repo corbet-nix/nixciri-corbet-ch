@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # Evaluates home/ciri.nix for real, and asserts the `nixdesktop.startup` seam works BOTH ways.
 #
 # WHY THIS FILE EXISTS AT ALL: `nix flake check` does not evaluate `homeManagerModules`. It reports

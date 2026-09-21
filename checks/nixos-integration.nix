@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # Evaluate the NixOS integration with and without nixdesktop's optional
 # registry. The product must install standalone and register the exact same
 # complete Ciri descriptor when the neutral launcher is composed.

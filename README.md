@@ -129,6 +129,6 @@ The public runtime and integration are complete only when the full GitHub Action
 suite is green. Publishing this repository does not activate Ciri on a host. A
 private platform hub must select it explicitly after those VM gates pass.
 
-## License
+## Licence
 
-MIT
+Outbound licence is `MIT OR Apache-2.0`. See `LICENSE-MIT` and `LICENSE-APACHE`; every source file carries `SPDX-License-Identifier: MIT OR Apache-2.0`.

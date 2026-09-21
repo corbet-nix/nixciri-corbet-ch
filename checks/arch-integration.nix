@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # Evaluate the Arch/system-manager product boundary without requiring
 # system-manager itself. The stubs cover only options written by the module.
 { pkgs, lib ? pkgs.lib, systemManagerModule }:
