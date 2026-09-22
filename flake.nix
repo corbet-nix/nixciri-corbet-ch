@@ -8,7 +8,7 @@
     # The runtime fork is a separate public product and the only compositor
     # source this integration packages. flake.lock makes that boundary exact.
     ciri = {
-      url = "github:corbet-labs/ciri";
+      url = "github:corbet-foss/ciri";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

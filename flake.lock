@@ -9,13 +9,13 @@
       "locked": {
         "lastModified": 1787980824,
         "narHash": "sha256-l5TxFMDbPGQV2B74PxEbJJWUJPZPD8fDJp2rbsLAqa4=",
-        "owner": "corbet-labs",
+        "owner": "corbet-foss",
         "repo": "ciri",
         "rev": "5b227c4bf49cb4e63e05b57f68316d1c5116fe7a",
         "type": "github"
       },
       "original": {
-        "owner": "corbet-labs",
+        "owner": "corbet-foss",
         "repo": "ciri",
         "type": "github"
       }

@@ -6,4 +6,4 @@ Additional coverage limits:
 
 - Working tree is active nixciri per durable task, but canonical origin still ends nixniri-corbet-ch; resolve identity before registration.
 - GitHub redirects old nixniri URL to nixciri; remote main e23378090d46e55c44f4d7c33e288262d622e494 differs local HEAD 11e3d0cfbd6aa2f9b3934ba65277dbf5814d391f. Synchronize safe source before migration.
-- Remote-current workflow has a 120-minute KVM gate and flake consumes corbet-labs/ciri with runtime nested/TTY VM fixtures; local copy understates current coverage. Preserve these gates when synchronizing.
+- Remote-current workflow has a 120-minute KVM gate and flake consumes corbet-foss/ciri with runtime nested/TTY VM fixtures; local copy understates current coverage. Preserve these gates when synchronizing.
