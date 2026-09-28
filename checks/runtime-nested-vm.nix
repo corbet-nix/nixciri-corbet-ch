@@ -80,6 +80,10 @@ pkgs.testers.nixosTest {
             "find /run/ciri-nested-vm -maxdepth 1 -type s -name 'ciri.*.sock' "
             "-print | sort > /run/ciri-nested-before"
         )
+        machine.succeed(
+            "find /run/ciri-nested-vm -maxdepth 1 -type s -name 'wayland-*' "
+            "-print | sort > /run/ciri-wayland-before"
+        )
 
     with subtest("the packaged compositor runs nested with software GL"):
         machine.succeed(
@@ -112,11 +116,18 @@ pkgs.testers.nixosTest {
 
     with subtest("window movement visits empty named slots in both directions"):
         machine.succeed(
+            "find /run/ciri-nested-vm -maxdepth 1 -type s -name 'wayland-*' "
+            "-print | sort | comm -13 /run/ciri-wayland-before - "
+            "> /run/ciri-wayland-owned-sockets"
+        )
+        machine.succeed("test $(wc -l < /run/ciri-wayland-owned-sockets) -eq 1")
+        machine.succeed(
             "XDG_RUNTIME_DIR=/run/ciri-nested-vm "
             "${pkgs.python3}/bin/python ${./workspace-movement.py} "
             "$(cat /run/ciri-nested-owned-sockets) "
             "$(systemctl show -p MainPID --value ciri-nested-vm.service) "
-            "${workspaceNames}"
+            "${workspaceNames} $(cat /run/ciri-wayland-owned-sockets) "
+            "${pkgs.foot}/bin/foot ${pkgs.coreutils}/bin/sleep"
         )
 
     machine.succeed("systemctl stop ciri-nested-vm.service weston-nested-vm.service")
