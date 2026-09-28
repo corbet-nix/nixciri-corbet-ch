@@ -298,6 +298,18 @@ let
     && trimmed (lineAt layoutRendered (i + 2)) == "}";
 
   results = {
+    "duplicate workspace names fail before compositor startup" =
+      lib.any (m: has m "programs.ciri.workspaces") (failingMessages (assertionsOf [
+        base { programs.ciri.workspaces = [ { name = "Work"; } { name = "work"; } ]; }
+      ]));
+    "workspace declaration order is independent of numeric names" =
+      let rendered = render [ base {
+        programs.ciri.workspaces = [ { name = "90"; } { name = "4"; } { name = "27"; } ];
+      } ]; in
+      indexOfLine rendered ''workspace "90"'' < indexOfLine rendered ''workspace "4"''
+      && indexOfLine rendered ''workspace "4"'' < indexOfLine rendered ''workspace "27"'';
+    "empty workspace policy does not create implicit slots" =
+      !(has quietRendered "workspace \"");
     # ── a structured output renders valid-looking KDL (block shape, fields reach the file) ─────
     "an identity key containing spaces is quoted as ONE KDL string" =
       has manualRendered ''output "Dell Inc. DELL U4323QE 9BQR2P3" {'';

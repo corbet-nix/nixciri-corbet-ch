@@ -159,6 +159,7 @@
 
         runtime-nested-vm = import ./checks/runtime-nested-vm.nix {
           pkgs = nixpkgs.legacyPackages.${system};
+          inherit ciriModule;
           nixosModule = self.nixosModules.ciri;
           ciriPackage = self.packages.${system}.ciri;
         };

@@ -2,13 +2,33 @@
 # Boot an isolated NixOS VM, start a headless Weston parent, then run the exact
 # packaged Ciri binary as a nested compositor. IPC is permitted only after the
 # test has proved which new socket this compositor owns.
-{ pkgs, nixosModule, ciriPackage }:
+{ pkgs, nixosModule, ciriPackage, ciriModule }:
 let
-  config = pkgs.writeText "ciri-nested-vm.kdl" ''
-    hotkey-overlay {
-        skip-at-startup
-    }
-  '';
+  names = [ "2" "11" "27" "3: web" "14: code" "38: chat" "alpha" "middle" "omega" "90" "42" "8" ];
+  evaluated = (pkgs.lib.evalModules {
+    specialArgs = { inherit pkgs; };
+    modules = [ ciriModule ({ lib, ... }: {
+      options = {
+        xdg.configFile = lib.mkOption { type = lib.types.attrsOf lib.types.anything; default = { }; };
+        home.packages = lib.mkOption { type = lib.types.listOf lib.types.anything; default = [ ]; };
+        home.file = lib.mkOption { type = lib.types.attrsOf lib.types.anything; default = { }; };
+        systemd.user = lib.mkOption { type = lib.types.anything; default = { }; };
+        assertions = lib.mkOption { type = lib.types.listOf lib.types.anything; default = [ ]; };
+        warnings = lib.mkOption { type = lib.types.listOf lib.types.str; default = [ ]; };
+      };
+      config.programs.ciri = {
+        enable = true;
+        workspaces = map (name: { inherit name; openOnOutput = "winit"; }) names;
+        extraTopLevel = ''
+          hotkey-overlay { skip-at-startup; }
+          animations { off; }
+        '';
+      };
+    }) ];
+  }).config;
+  config = assert pkgs.lib.all (a: a.assertion) evaluated.assertions;
+    pkgs.writeText "ciri-nested-vm.kdl" evaluated.xdg.configFile."ciri/config.kdl".text;
+  workspaceNames = pkgs.writeText "ciri-test-workspaces.json" (builtins.toJSON names);
 in
 pkgs.testers.nixosTest {
   name = "nixciri-nested-runtime";
@@ -22,6 +42,8 @@ pkgs.testers.nixosTest {
     environment.systemPackages = [
       pkgs.jq
       pkgs.weston
+      pkgs.foot
+      pkgs.python3
     ];
     virtualisation = {
       memorySize = 3072;
@@ -86,6 +108,15 @@ pkgs.testers.nixosTest {
             "CIRI_SOCKET=$socket ${ciriPackage}/bin/ciri msg --json outputs "
             "| tee /run/ciri-nested-outputs.json "
             "| jq -e 'length == 1 and .winit.name == \"winit\"'"
+        )
+
+    with subtest("window movement visits empty named slots in both directions"):
+        machine.succeed(
+            "XDG_RUNTIME_DIR=/run/ciri-nested-vm "
+            "${pkgs.python3}/bin/python ${./workspace-movement.py} "
+            "$(cat /run/ciri-nested-owned-sockets) "
+            "$(systemctl show -p MainPID --value ciri-nested-vm.service) "
+            "${workspaceNames}"
         )
 
     machine.succeed("systemctl stop ciri-nested-vm.service weston-nested-vm.service")

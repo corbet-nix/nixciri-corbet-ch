@@ -157,6 +157,11 @@ let
   # option no one has ever asked the parser about.
   fixture = {
     programs.ciri.enable = true;
+    programs.ciri.workspaces = [
+      { name = "2"; }
+      { name = "11: code"; openOnOutput = "DP-2"; }
+      { name = ''notes "quoted" \\ archive''; }
+    ];
     programs.ciri.layout = "docked";
     programs.ciri.session = "primary";
     # This is the exact package whose validator runs below, not a version stand-in.
@@ -177,6 +182,8 @@ let
       }
     '';
     programs.ciri.binds = {
+      "Mod+2" = ''focus-workspace "2"'';
+      "Mod+Shift+2" = ''move-column-to-workspace "2"'';
       "Mod+Y" = ''spawn "true"'';
       "Mod+Escape" = {
         action = ''spawn-sh "nixlock -f"'';

@@ -95,7 +95,13 @@ will run.
 
 ## Raw escape hatches
 
-Structured outputs and binds cover the validated surface. The following options
+`programs.ciri.workspaces` declares persistent slots in list order, with a `name`
+and optional `openOnOutput`. Empty declared slots remain reachable with Up/Down
+workspace movement. Bindings such as `focus-workspace "2"` target the name;
+unquoted `focus-workspace 2` targets a changing one-based index. Horizontal
+movement retains Ciri's column semantics, and workspace boundaries do not wrap.
+
+Structured outputs, workspaces and binds cover the validated surface. The following options
 carry Ciri KDL verbatim for private choices or new upstream syntax:
 
 - `extraOutputs`
@@ -108,6 +114,8 @@ carry Ciri KDL verbatim for private choices or new upstream syntax:
 
 The flake checks:
 
+- move real windows through empty declared slots with sparse numeric names,
+  labels and plain names in both directions in an isolated nested compositor;
 - evaluate the Home Manager module instead of merely listing it;
 - test startup translation in both composed and standalone states;
 - test output, layout, monitor-alias, transform and device-path translation;

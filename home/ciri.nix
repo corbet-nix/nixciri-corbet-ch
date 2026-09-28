@@ -57,7 +57,7 @@ let
   # multi-word identity triple go through one code path instead of two. Same escaping doctrine as
   # nixscroll's `home/scroll.nix` `quoteName` -- double quotes are documented KDL grammar here,
   # not a shell-quoting convention, so this is not `lib.escapeShellArg`.
-  quoteKdl = n: ''"${lib.replaceStrings [ ''"'' ] [ ''\"'' ] n}"'';
+  quoteKdl = n: ''"${lib.replaceStrings [ "\\" ''"'' "\n" "\r" "\t" ] [ "\\\\" ''\"'' "\\n" "\\r" "\\t" ] n}"'';
 
   # niri's `modeline` directive (KDL, since niri 25.11) takes the SAME nine timing numbers, in
   # the SAME order, as nixdisplay's neutral `modeline` string (`modules/layouts.nix`) -- but Ciri
@@ -443,6 +443,31 @@ in
   options.programs.ciri = {
     enable = lib.mkEnableOption "declarative Ciri config (~/.config/ciri/config.kdl)";
 
+    workspaces = lib.mkOption {
+      type = lib.types.listOf (lib.types.submodule {
+        options = {
+          name = lib.mkOption {
+            type = lib.types.nonEmptyStr;
+            example = "work";
+            description = "Persistent workspace name; numeric names are names, not dynamic indices.";
+          };
+          openOnOutput = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            example = "DP-1";
+            description = "Preferred output connector or identity; null leaves placement to Ciri.";
+          };
+        };
+      });
+      default = [ ];
+      example = [ { name = "work"; } { name = "chat"; openOnOutput = "DP-1"; } ];
+      description = ''
+        Persistent named workspaces, in declaration order. Empty named workspaces remain
+        available to directional movement. Bindings must use quoted names to address these
+        slots rather than Ciri's changing one-based workspace indices.
+      '';
+    };
+
     outputs = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule { options = outputEntryOptions; });
       default = { };
@@ -652,8 +677,11 @@ in
     # Neither seam probes unconditionally: see `layoutsProbe`/`monitorsProbe`/`sessionsProbe`
     # above for why an always-on probe would misreport "nixdisplay.layouts was renamed" about a
     # host that simply never named a `layout` (or a `session`) in the first place.
-    assertions =
-      lib.optionals (cfg.layout != null) (
+    assertions = [ {
+      assertion = let names = map (w: lib.toLower w.name) cfg.workspaces;
+        in builtins.length names == builtins.length (lib.unique names);
+      message = "programs.ciri.workspaces must use unique names (case-insensitive); remove duplicate slots.";
+    } ] ++ lib.optionals (cfg.layout != null) (
         [{
           assertion = layoutsProbe.value ? ${cfg.layout};
           message = ''
@@ -776,6 +804,12 @@ in
       // the next `home-manager switch` -- set options instead.
 
       ${outputsSection}
+
+      ${lib.concatMapStringsSep "\n" (w: ''
+        workspace ${quoteKdl w.name} {
+            ${lib.optionalString (w.openOnOutput != null) "open-on-output ${quoteKdl w.openOnOutput}"}
+        }
+      '') cfg.workspaces}
 
       ${lib.concatStringsSep "\n" (neutralStartup ++ cfg.extraStartup)}
 
